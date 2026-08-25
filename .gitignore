@@ -1,0 +1,14 @@
+# Run lock — a lock, not a record
+state/.run-active
+
+.DS_Store
+node_modules/
+*.log
+
+# Never let raw mail bodies or credentials land in the repo
+*.eml
+*.mbox
+.env
+.env.*
+credentials*.json
+token*.json
