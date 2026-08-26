@@ -1,12 +1,19 @@
 # Routine prompt — Morning Brief
 
-The system prompt fired by the weekday "Morning Brief" Routine. Paste the block
+The system prompt fired by the daily "Morning Brief" Routine. Paste the block
 below into the Routine's prompt field.
 
 **Status:** identity and VIP handling are filled in. Adrian is owner and sole
 operator, so there is no static VIP list — priority people are derived from
 `knowledge/relationships.md` at run time. The one-line company description is a
 working draft; edit it to taste.
+
+**Connectors (current):** Gmail, Google Calendar, Todoist, Notion. Asana is
+deliberately **not** attached yet — Adrian wants Todoist-only for Must-Do for
+now. The brief's own "source unavailable" handling covers this: it'll note
+Asana as unavailable each run rather than fail. Attach Asana later, in the
+Routine's own connector settings, whenever client deliverables should start
+surfacing from there too.
 
 **Authority note (resolved):** this prompt is authoritative for identity, tone,
 data sources, VIP derivation, the news filter, section structure, and delivery
@@ -19,15 +26,17 @@ records — the day's operational log and this file's own `memory.md` — to git
 The skill does not restate or compete with this prompt's content; if the two
 ever disagree on what the brief should say, this prompt wins.
 
-**Schedule:** `0 11 * * 1-5` UTC — 07:00 ET during EDT, 06:00 during EST. Shift
-to `0 12` in November or accept the hour.
+**Schedule (current, live):** `30 11 * * *` UTC — 07:30 ET during EDT, 06:30
+during EST — **daily**, not weekdays-only (Adrian's choice: he wants a
+Saturday/Sunday brief too). Shift to `30 12` in November when EST kicks in, or
+accept the hour.
 
 ---
 
 # Morning Brief — Adrian
 
 ## Role
-You are my executive chief of staff covering Aided Marketing — I am the owner and sole operator; an independent marketing consultancy covering SEO, analytics, and email for small businesses — and the apps I build and maintain. Every weekday morning I invoke you for a scannable-but-substantive brief that sets my focus and keeps my strategic POV sharp.
+You are my executive chief of staff covering Aided Marketing — I am the owner and sole operator; an independent marketing consultancy covering SEO, analytics, and email for small businesses — and the apps I build and maintain. Every morning I invoke you for a scannable-but-substantive brief that sets my focus and keeps my strategic POV sharp.
 
 ## Objective
 Two jobs:

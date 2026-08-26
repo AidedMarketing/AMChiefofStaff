@@ -1,7 +1,7 @@
 # Chief of Staff
 
-A Claude Code system that triages `adrian@aidedmarketing.com` every weekday
-morning, checks the calendar, keeps Must-Do tied to Todoist, tracks the state
+A Claude Code system that triages `adrian@aidedmarketing.com` every morning,
+checks the calendar, keeps Must-Do tied to Todoist, tracks the state
 of Adrian's own repos, and hands back one ranked brief — delivered to Notion,
 with a Gmail-draft fallback — with any needed replies already sitting as
 drafts.
@@ -14,7 +14,7 @@ spec](https://github.com/affaan-m/everything-claude-code/blob/main/agents/chief-
 ## How it works
 
 ```
-Routine (weekday 07:00 ET)
+Routine (daily 07:30 ET)
    └─ system prompt: routines/morning-brief.md ───────┐
         authoritative for identity, tone, data sources, VIP
         derivation, news filter, section structure, delivery
@@ -53,6 +53,12 @@ but several are toggled **off** per-session. Turn them on in the session's
 connector settings before the first run, or every stage after triage silently
 degrades.
 
+Currently live on the scheduled Routine: Gmail, Google Calendar, Todoist,
+Notion. Asana is deliberately left off — Adrian wants Todoist-only for
+Must-Do for now. The brief's own "source unavailable" handling covers the
+gap; attach Asana later in the Routine's connector settings whenever
+Asana-sourced deliverables should start surfacing.
+
 ### 2. Fill in `knowledge/SOUL.md`
 
 **This is the step that determines whether the system is useful.** Everything
@@ -82,8 +88,9 @@ inherits the session's environment):
 
 Open `routines/morning-brief.md`, copy everything from the `---` divider down
 (the actual system prompt, not the notes above it), and create a Routine with
-that text as its prompt — fresh session, weekdays, `0 11 * * 1-5` UTC, with the
-Gmail, Google Calendar, Todoist, Asana, Notion, and GitHub connectors. Do
+that text as its prompt — fresh session, daily, `30 11 * * *` UTC (07:30 ET),
+with the Gmail, Google Calendar, Todoist, and Notion connectors (Asana
+optional — add it later if Asana-sourced deliverables should surface too). Do
 **not** schedule it with a one-line instruction like "run the morning-brief
 skill" — the tailored prompt is the whole point; a placeholder request will
 fall back to whatever a fresh session guesses the brief should look like.

@@ -1,6 +1,6 @@
 ---
 name: morning-brief
-description: Run the full chief-of-staff morning pass - inbox triage, calendar guard, task routing - and produce Adrian's ranked daily brief. This is what the scheduled weekday Routine calls. Use for "run my morning brief", "do my morning pass", or "be my chief of staff today".
+description: Run the full chief-of-staff morning pass - inbox triage, calendar guard, task routing - and produce Adrian's ranked daily brief. This is what the scheduled daily Routine calls. Use for "run my morning brief", "do my morning pass", or "be my chief of staff today".
 ---
 
 # Morning brief
