@@ -21,10 +21,13 @@ fix than an absent one.
 ## Stage 1 — Fetch
 
 Pull unread and unarchived mail from `adrian@aidedmarketing.com` since the last
-run. The last run is the most recent file in `state/triage-log/`; if there is
-none, use the last 48 hours.
+run, per the window, hard cap, and backlog rules in `knowledge/routing.md`
+under "Scope." Read that section before the first run against a stale inbox —
+it exists specifically so a run never tries to process the full mailbox.
 
 Fetch threads, not individual messages — a reply already sent changes the tier.
+For senders matching a known bot/newsletter/notification pattern, classify off
+sender + subject before pulling full thread bodies.
 
 ## Stage 2 — Classify into four tiers
 
