@@ -1,8 +1,10 @@
 # Chief of Staff
 
 A Claude Code system that triages `adrian@aidedmarketing.com` every weekday
-morning, checks the calendar, routes commitments into Todoist / Asana / Notion,
-and hands back one ranked brief with drafts already sitting in Gmail.
+morning, checks the calendar, keeps Must-Do tied to Todoist, tracks the state
+of Adrian's own repos, and hands back one ranked brief — delivered to Notion,
+with a Gmail-draft fallback — with any needed replies already sitting as
+drafts.
 
 Modelled on the pattern in [Matt Paige's chief-of-staff
 tutorial](https://mattpaige68.substack.com/p/how-i-turned-claude-code-into-my)
@@ -13,23 +15,34 @@ spec](https://github.com/affaan-m/everything-claude-code/blob/main/agents/chief-
 
 ```
 Routine (weekday 07:00 ET)
-   └─ morning-brief ────────────────────────────────┐
-        ├─ email-triage    skip / info / meeting / action, ranked P1–P3
-        │    └─ draft-writer (subagent)  voice-matched drafts, >5 threads
-        ├─ calendar-guard  conflicts, prep gaps, availability answers
-        ├─ task-routing    commitments → Todoist / Asana / Notion
-        └─ Stop hook ──────────────────────────────┘
-             refuses to end the run until the log is complete and committed
+   └─ system prompt: routines/morning-brief.md ───────┐
+        authoritative for identity, tone, data sources, VIP
+        derivation, news filter, section structure, delivery
+        │
+        └─ mechanics: .claude/skills/morning-brief/SKILL.md
+             ├─ email-triage    skip / info / meeting / action, ranked P1–P3
+             │    └─ draft-writer (subagent)  voice-matched drafts, >5 threads
+             ├─ calendar-guard  conflicts, prep gaps, availability answers
+             ├─ task-routing    commitments → Todoist / Asana / Notion
+             └─ Stop hook ──────────────────────────────┘
+                  refuses to end the run until the operational log is
+                  complete, memory.md is updated, and both are committed
 ```
+
+The Routine's prompt field holds the literal text of `routines/morning-brief.md`
+— that file is what actually runs, not a request to invoke a skill by name. The
+skill underneath supplies mechanics only; see the note at the top of both
+files if you're ever unsure which one governs a given piece of behavior.
 
 Three ideas carry the whole thing:
 
-1. **Knowledge lives in git, not in context.** Sessions are ephemeral. `SOUL.md`,
-   `relationships.md`, `priorities.md` and the triage logs are the memory.
+1. **Knowledge lives in git, not in context.** Sessions are ephemeral.
+   `SOUL.md`, `relationships.md`, `priorities.md`, the operational logs, and
+   `memory.md` are the memory.
 2. **Hooks over prompts.** Instructions get dropped; a file check does not. The
    `Stop` hook blocks a half-finished run rather than trusting a checklist.
-3. **Drafts, never sends.** The agent's output is a draft in Gmail. Adrian is
-   always the one who hits send.
+3. **Drafts, never sends.** The agent's output is a draft — in Gmail, or a
+   Notion page. Adrian is always the one who hits send.
 
 ## Setup
 
@@ -67,14 +80,18 @@ your own judgment, then let it draft.
 From a Claude Code session **on this repo** (not another one — the Routine
 inherits the session's environment):
 
-> Create a Routine called "Morning brief" that fires a fresh session every
-> weekday at `0 11 * * 1-5` UTC with the connectors Gmail, Google Calendar,
-> Todoist, Asana and Notion, and the prompt: "Run the morning-brief skill for
-> today. Full pass. Report the brief when done."
+Open `routines/morning-brief.md`, copy everything from the `---` divider down
+(the actual system prompt, not the notes above it), and create a Routine with
+that text as its prompt — fresh session, weekdays, `0 11 * * 1-5` UTC, with the
+Gmail, Google Calendar, Todoist, Asana, Notion, and GitHub connectors. Do
+**not** schedule it with a one-line instruction like "run the morning-brief
+skill" — the tailored prompt is the whole point; a placeholder request will
+fall back to whatever a fresh session guesses the brief should look like.
 
-And for Fridays:
+For Fridays:
 
-> Same, called "Weekly review", cron `0 20 * * 5`, prompt: "Run the
+> Create a Routine called "Weekly review" that fires a fresh session every
+> Friday at `0 20 * * 5` UTC with the same connectors, prompt: "Run the
 > weekly-review skill for this week."
 
 **Cron is UTC.** `0 11` is 07:00 Eastern during EDT and 06:00 during EST — shift
@@ -82,7 +99,9 @@ to `0 12` when the clocks go back in November, or accept the hour.
 
 ## Running it by hand
 
-Any of these work in a session on this repo:
+Any of these work in a session on this repo. "Run my morning brief" invokes
+the `morning-brief` skill, which reads `routines/morning-brief.md` for content
+— so an ad-hoc run and the scheduled Routine produce the same shape of brief.
 
 - "Run my morning brief"
 - "Triage my inbox"
