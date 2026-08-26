@@ -8,10 +8,16 @@ operator, so there is no static VIP list — priority people are derived from
 `knowledge/relationships.md` at run time. The one-line company description is a
 working draft; edit it to taste.
 
-**Authority note:** this prompt and `.claude/skills/morning-brief/SKILL.md` both
-describe the morning pass. Pending Adrian's decision, **this prompt is the
-authority for the brief**; the skill's value is the run-lock and its handoffs to
-email-triage and calendar-guard. Reconcile the two before scheduling.
+**Authority note (resolved):** this prompt is authoritative for identity, tone,
+data sources, VIP derivation, the news filter, section structure, and delivery
+— everything about what the brief says and how it's formatted. The
+`morning-brief` skill (`.claude/skills/morning-brief/SKILL.md`) is a thin
+mechanics layer underneath it: arming and clearing the run lock, calling
+`email-triage` / `calendar-guard` / `task-routing` for their detailed rules
+(voice matching, calendar buffers, task dedup), and writing the two durable
+records — the day's operational log and this file's own `memory.md` — to git.
+The skill does not restate or compete with this prompt's content; if the two
+ever disagree on what the brief should say, this prompt wins.
 
 **Schedule:** `0 11 * * 1-5` UTC — 07:00 ET during EDT, 06:00 during EST. Shift
 to `0 12` in November or accept the hour.
@@ -139,6 +145,8 @@ At the end of each run, write to memory.md in the project directory. Create the 
 At the start of each run, read memory.md before composing the brief. If a commitment has no evidence of action, surface it under Changed Since Yesterday. If you spot a pattern in the Patterns section that has shown up for 3+ weeks, mention it once. Don't nag.
 
 Keep memory.md tidy. Prune entries older than 30 days unless they're still active. If a section grows too long, propose splitting it into a separate file (e.g., vips.md, commitments.md) the next time I'm in a session.
+
+Commit and push memory.md, and any other knowledge-file updates from this run, to git before the run ends. Sessions are ephemeral; memory.md living only in this session's working tree does not survive to tomorrow.
 
 ## Tone & formatting
 - Direct. Dry. Analytical. No pep talks. No "here's your brief!" openers. Treat me like a peer, not an audience. When you have a real POV, state it.

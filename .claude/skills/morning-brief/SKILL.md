@@ -5,7 +5,14 @@ description: Run the full chief-of-staff morning pass - inbox triage, calendar g
 
 # Morning brief
 
-The orchestrator. Runs the whole pass in order and produces one brief.
+**This skill is mechanics only.** Everything about what the brief says and how
+it's formatted — role, tone, data sources, VIP derivation, the news filter,
+section structure, and delivery — lives in `routines/morning-brief.md`. Read it
+in full and follow it for content. This skill supplies the run scaffolding
+around it: opening and closing the run, invoking the other skills for their
+detailed rules, and writing the two durable records. If this file and the
+routine prompt ever seem to disagree about what the brief should contain, the
+routine prompt wins — fix this file, not your output.
 
 ## 0 — Open the run
 
@@ -15,16 +22,20 @@ date +%Y-%m-%d > state/.run-active
 ```
 
 `state/.run-active` arms the Stop hook. From this point the session cannot end
-until today's log is complete. That is the point.
+until today's operational log is complete. That is the point.
 
-Then confirm connectors. Gmail, Google Calendar, Todoist, Asana, Notion. If one
-is missing, note it and continue with the stages you can run — but record the
-skip in the log. Never silently drop a stage.
+Then confirm connectors against the routine prompt's Data sources list —
+Google Calendar, Gmail, Todoist, Asana, Notion, GitHub, web search. If one is
+missing, say which one at the top of the brief per the routine prompt's
+instruction, and record the skip in the operational log below. Never silently
+drop a source.
 
 ## 1 — Load context
 
-Read `knowledge/SOUL.md`, `knowledge/relationships.md`, `knowledge/priorities.md`,
-`knowledge/routing.md`, and `state/pending-responses.md`.
+Read `knowledge/relationships.md`, `knowledge/priorities.md`, `knowledge/routing.md`,
+and `memory.md` (repo root — create it if this is the first run). The routine
+prompt tells you what to do with each; this step just makes sure they're loaded
+before you start.
 
 If `priorities.md` has not been reviewed in over 14 days (check its
 **Last reviewed** date), say so in the brief. Ranking against stale priorities
@@ -32,58 +43,51 @@ is the main way this system goes quietly wrong.
 
 ## 2 — Triage the inbox
 
-Run **email-triage**. Hand Meeting-tier threads to calendar-guard as it goes.
+Run **email-triage** for the detailed tiering, drafting, and voice rules. Hand
+Meeting-tier threads to calendar-guard as it goes. Fold its output into the
+routine prompt's Needs My Response and Today's Schedule sections.
 
 ## 3 — Guard the calendar
 
-Run **calendar-guard**'s daily scan.
+Run **calendar-guard**'s daily scan for the buffer math and conflict rules.
+Fold its output into Today's Schedule.
 
 ## 4 — Route the tasks
 
-Run **task-routing** over what triage and the calendar surfaced.
+Run **task-routing** for the dedup and destination rules. Fold its output into
+Must-Do Today.
 
-## 5 — Chase what's owed
+## 5 — Compose and deliver
 
-Read `state/pending-responses.md`. Anything past its chase interval (see
-`knowledge/routing.md`) gets a short follow-up draft, same rules as any other
-draft — saved, never sent.
+Follow `routines/morning-brief.md` for the brief's structure, tone, and
+delivery (Notion page, Gmail-draft fallback, full markdown in session output).
+This skill does not define the brief's shape — see the note at the top.
 
-## 6 — Write the brief
+## 6 — Close the run
 
-Ranked, short, readable on a phone. This order, and nothing else:
+Write two records before the run ends:
 
-```
-## Needs you first
-<open questions and draft gaps — the things that block everything else>
+**The operational log** — `state/triage-log/YYYY-MM-DD.md`, per the structure
+in `state/README.md`. This is the detailed record of today's run: every
+thread's tier, every draft's status, connector skips, archive candidates. The
+Stop hook checks this file exists and is complete.
 
-## Drafted and waiting (P1 → P3)
-<one line each: sender · what they want · complete or gapped>
+**memory.md** — per the routine prompt's Memory protocol section: Active
+Commitments, Watched Threads, VIPs Owed Response, At-Risk or Accelerating
+Client Work, Story Angles, Patterns. This is the rolled-up, pruned, cross-day
+memory the routine prompt reads at the start of every future run — a different
+grain than the operational log, not a duplicate of it.
 
-## Calendar
-<only what's wrong. "Clean" if nothing is.>
+Also update `state/pending-responses.md` and set `Last touch` in
+`knowledge/relationships.md` for everyone drafted to.
 
-## Captured
-<tasks created, where. Declines called out.>
-
-## Chasing
-<who owes Adrian what, and how long it's been>
-
-## Quiet
-<counts only: N skipped, N info>
-```
-
-If a section is empty, delete the heading. An empty section is noise.
-
-## 7 — Close the run
-
-Write `state/triage-log/YYYY-MM-DD.md` per the structure in `state/README.md`,
-update `state/pending-responses.md` and `knowledge/relationships.md`, then:
+Then:
 
 ```bash
 rm -f state/.run-active
 git add -A && git commit -m "chief-of-staff: morning pass YYYY-MM-DD" && git push
 ```
 
-Remove `.run-active` **only after** the log is written. The hook is there to
-catch the case where you get this wrong; do not treat it as the primary
-mechanism.
+Remove `.run-active` **only after** both records are written. The hook is
+there to catch the case where you get this wrong; do not treat it as the
+primary mechanism.
