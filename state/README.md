@@ -2,6 +2,12 @@
 
 Ephemeral sessions, durable repo. Nothing here is scratch; it is the memory.
 
+This directory holds the **operational** record — the detailed, per-run log
+that the Stop hook checks. It's a different grain from `memory.md` at the repo
+root, which is the rolled-up, pruned, cross-day memory the Morning Brief
+routine prompt (`routines/morning-brief.md`) reads and writes each run. Both
+get written every run; neither replaces the other.
+
 ## `triage-log/YYYY-MM-DD.md`
 
 One per run. The Stop hook checks this file, so the headings below are load-bearing

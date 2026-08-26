@@ -34,8 +34,10 @@ working on, and what is currently outstanding.
 | `knowledge/priorities.md` | Live projects and goals. Decides what counts as P1. |
 | `knowledge/routing.md` | Sender rules, task-system routing, safe-to-archive list. |
 | `state/pending-responses.md` | Threads where Adrian is waiting on *someone else*. |
-| `state/triage-log/YYYY-MM-DD.md` | One file per run. The day's record. |
+| `state/triage-log/YYYY-MM-DD.md` | One file per run. The day's operational record — every thread's tier, every draft's status. |
 | `state/weekly-review/YYYY-Www.md` | Weekly rollup. |
+| `memory.md` (repo root) | Rolled-up, pruned, cross-day memory: active commitments, watched threads, VIPs owed a response, patterns. Written and read per `routines/morning-brief.md`'s Memory protocol — a different grain than the triage log, not a duplicate of it. |
+| `routines/morning-brief.md` | The Routine's actual system prompt. Authoritative for the brief's content, tone, and format — see the note at the top of `.claude/skills/morning-brief/SKILL.md`. |
 
 ## Skills
 
@@ -57,10 +59,11 @@ what you skipped in the triage log. Do not silently drop a stage.
 ## The follow-through contract
 
 A run is not finished when the drafts exist. It is finished when today's
-`state/triage-log/` entry is complete and committed. A `Stop` hook enforces
-this: it will refuse to let the session end while `state/.run-active` exists and
-the log is incomplete. That is deliberate — it exists because instructions get
-dropped and file checks do not.
+`state/triage-log/` entry is complete, `memory.md` is updated per its protocol,
+and both are committed. A `Stop` hook enforces the operational log half of
+this: it will refuse to let the session end while `state/.run-active` exists
+and the log is incomplete. That is deliberate — it exists because instructions
+get dropped and file checks do not.
 
 ## Tone with Adrian
 
